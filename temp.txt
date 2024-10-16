@@ -1,0 +1,72 @@
+<hc:Window x:Class="Gimmickalizer.Views.RootView"
+           xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+           xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+           xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+           xmlns:viewModels="clr-namespace:Gimmickalizer.ViewModels"
+           xmlns:hc="https://handyorg.github.io/handycontrol"
+           mc:Ignorable="d"
+           d:DataContext="{d:DesignInstance Type=viewModels:RootViewModel}"
+           Title="{Binding Title}" 
+           WindowStartupLocation="CenterScreen"
+           ShowTitle="True"
+           Height="450" 
+           Width="800">
+    
+    <Border Padding="10">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="4*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Row="0">
+                <!-- 文件夹路径输入 -->
+                <TextBlock Margin="0 5 0 0">
+                    .osu文件夹路径
+                </TextBlock>
+                <TextBox Margin="0 5 0 0"
+                         x:Name="FolderPath" />
+
+                <!-- 读取路径并选择难度 -->
+                <Grid>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="7*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Button Margin="0 5 0 0"
+                            HorizontalAlignment="Left"
+                            Grid.Column="0" Content="读取路径"
+                            Click="ReadPath_Click" />
+                    <ComboBox Margin="0 5 0 0"
+                              Grid.Column="1"
+                              x:Name="DifficultySelect"/>
+                </Grid>
+
+                <!-- 选择Gimmick类型 -->
+                <TextBlock Margin="0 10 0 0">
+                    选择Gimmick类型
+                </TextBlock>
+                <ComboBox Margin="0 5 0 0"
+                          SelectedIndex="0">
+                    <ComboBoxItem>Barlines</ComboBoxItem>
+                    <ComboBoxItem>Yellow Notes</ComboBoxItem>
+                </ComboBox>
+                
+                <!-- Gimmick化! -->
+                <Button Margin="0 10 0 0"
+                        Content="Gimmick化!"
+                        HorizontalAlignment="Left" />
+
+            </StackPanel>
+
+            <DockPanel Grid.Row="1">
+                
+            </DockPanel>
+
+        </Grid>
+    </Border>
+    
+</hc:Window>
