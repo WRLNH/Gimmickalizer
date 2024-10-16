@@ -1,7 +1,4 @@
 ﻿using Stylet;
-using System.Collections.ObjectModel;
-using Serilog;
-using Screen = Stylet.Screen;
 
 namespace Gimmickalizer.ViewModels
 {

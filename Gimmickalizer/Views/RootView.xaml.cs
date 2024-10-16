@@ -1,21 +1,40 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
+﻿using NLog;
+using NLog.Targets.Helper;
+using NLog.Targets.Wrappers;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media;
-using Gimmickalizer.ViewModels;
 
 namespace Gimmickalizer.Views
 {
     public partial class RootView : HandyControl.Controls.Window
     {
-        //public string 
+        private Logger logger = LogManager.GetCurrentClassLogger();
 
         public RootView()
         {
             InitializeComponent();
+
+            Dispatcher.Invoke(() =>
+            {
+                var target = new WpfRichTextBoxTarget
+                {
+                    Name = "RichText",
+                    Layout = "[${longdate:useUTC=false}] :: [${level:uppercase=true}] :: ${logger}:${callsite} :: ${message} ${exception:innerFormat=tostring:maxInnerExceptionLevel=10:seperator=,:format=tostring}",
+                    ControlName = "LogRichTextBox",
+                    FormName = GetType().Name,
+                    AutoScroll = true,
+                    MaxLines = 1000,
+                    UseDefaultRowColoringRules = true
+                };
+                var asyncWrapper = new AsyncTargetWrapper { Name = "RichTextAsync", WrappedTarget = target };
+
+                LogManager.Configuration.AddTarget(asyncWrapper.Name, asyncWrapper);
+                LogManager.Configuration.LoggingRules.Insert(0, new NLog.Config.LoggingRule("*", LogLevel.Info, asyncWrapper));
+                LogManager.ReconfigExistingLoggers();
+            });
+            
         }
 
         private void ReadPath_Click(object sender, RoutedEventArgs e)
@@ -39,18 +58,18 @@ namespace Gimmickalizer.Views
             {
                 if (FolderPath.Text == "" || FolderPath.Text == null)
                 {
-                    MessageBox.Show("你不输入路径想干嘛!");
+                    logger.Info("你不输入路径想干嘛!");
                 }
                 else
                 {
-                    MessageBox.Show("路径错啦! 检查下吧");
+                    logger.Info("路径错啦! 检查下吧");
                 }
             }
         }
 
         private void Gimmickalize_Click(object sender, RoutedEventArgs e)
         {
-            
+            logger.Info("111");
         }
     }
 }
