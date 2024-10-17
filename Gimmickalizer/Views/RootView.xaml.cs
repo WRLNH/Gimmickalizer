@@ -5,12 +5,17 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using Gimmickalizer;
+using System.Diagnostics;
+using System.IO.IsolatedStorage;
 
 namespace Gimmickalizer.Views
 {
     public partial class RootView : HandyControl.Controls.Window
     {
-        private Logger logger = LogManager.GetCurrentClassLogger();
+        public Logger logger = LogManager.GetCurrentClassLogger();
+        public List<FileInfo> lstFiles;
+        public string inputFilePath;
 
         public RootView()
         {
@@ -21,7 +26,7 @@ namespace Gimmickalizer.Views
                 var target = new WpfRichTextBoxTarget
                 {
                     Name = "RichText",
-                    Layout = "[${longdate:useUTC=false}] :: [${level:uppercase=true}] :: ${logger}:${callsite} :: ${message} ${exception:innerFormat=tostring:maxInnerExceptionLevel=10:seperator=,:format=tostring}",
+                    Layout = "[${time}] [${level:uppercase=true}] :: ${message} ${exception:innerFormat=tostring:maxInnerExceptionLevel=10:seperator=,:format=tostring}",
                     ControlName = "LogRichTextBox",
                     FormName = GetType().Name,
                     AutoScroll = true,
@@ -34,7 +39,6 @@ namespace Gimmickalizer.Views
                 LogManager.Configuration.LoggingRules.Insert(0, new NLog.Config.LoggingRule("*", LogLevel.Info, asyncWrapper));
                 LogManager.ReconfigExistingLoggers();
             });
-            
         }
 
         private void ReadPath_Click(object sender, RoutedEventArgs e)
@@ -43,8 +47,7 @@ namespace Gimmickalizer.Views
             {
                 // 获取指定的.osu文件夹路径
                 DirectoryInfo FolderInfo = new DirectoryInfo(FolderPath.Text);
-                FileInfo[] Files = FolderInfo.GetFiles();
-                List<FileInfo> lstFiles = Files.ToList();
+                lstFiles = FolderInfo.GetFiles().ToList();
                 for (int i = 0; i < lstFiles.Count; i++)
                 {
                     if (lstFiles[i].Extension == ".osu")
@@ -58,18 +61,46 @@ namespace Gimmickalizer.Views
             {
                 if (FolderPath.Text == "" || FolderPath.Text == null)
                 {
-                    logger.Info("你不输入路径想干嘛!");
+                    logger.Error("你不输入路径想干嘛!");
                 }
                 else
                 {
-                    logger.Info("路径错啦! 检查下吧");
+                    logger.Error("路径错啦! 检查下吧");
                 }
             }
         }
 
         private void Gimmickalize_Click(object sender, RoutedEventArgs e)
         {
-            logger.Info("111");
+            logger.Info("开始Gimmickalize...");
+            try
+            {
+                try
+                {
+                    string diffName = Gimmickalize.GetDiffName(DifficultySelect.SelectedItem.ToString());
+                    StreamReader openFile = new StreamReader(FolderPath.Text + '\\' + DifficultySelect.SelectedItem.ToString());
+                    logger.Info("File opened");
+
+                    if (GimmickTypeSelect.SelectedItem.ToString() == "System.Windows.Controls.ComboBoxItem: Barlines")
+                    {
+                        Gimmickalize.Barlines(openFile, diffName, logger);
+                    }
+                    else if (GimmickTypeSelect.SelectedItem.ToString() == "System.Windows.Controls.ComboBoxItem: Yellow Notes")
+                    {
+
+                    }
+
+                    openFile.Close();
+                }
+                catch
+                {
+                    logger.Error("Gimmickalize失败...");
+                }
+            }
+            catch
+            {
+                logger.Error("打开文件失败...");
+            }
         }
     }
 }

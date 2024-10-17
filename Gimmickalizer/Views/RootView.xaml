@@ -58,6 +58,7 @@
                     选择Gimmick类型
                 </TextBlock>
                 <ComboBox
+                    x:Name="GimmickTypeSelect"
                     Margin="0 5 0 0"
                     SelectedIndex="0">
                     <ComboBoxItem>Barlines</ComboBoxItem>
@@ -76,6 +77,7 @@
             <!-- 日志界面 -->
             <RichTextBox
                 x:Name="LogRichTextBox"
+                Margin="5 0"
                 Grid.Column="1"
                 VerticalScrollBarVisibility="Visible" />
             
