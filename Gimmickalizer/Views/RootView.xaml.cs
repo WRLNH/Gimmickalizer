@@ -48,11 +48,11 @@ namespace Gimmickalizer.Views
                 // 获取指定的.osu文件夹路径
                 DirectoryInfo FolderInfo = new DirectoryInfo(FolderPath.Text);
                 lstFiles = FolderInfo.GetFiles().ToList();
-                for (int i = 0; i < lstFiles.Count; i++)
+                foreach (FileInfo file in lstFiles)
                 {
-                    if (lstFiles[i].Extension == ".osu")
+                    if (file.Extension == ".osu")
                     {
-                        DifficultySelect.Items.Add(lstFiles[i].Name);
+                        DifficultySelect.Items.Add(file.Name);
                     }
                 }
                 DifficultySelect.SelectedIndex = 0;
@@ -77,13 +77,13 @@ namespace Gimmickalizer.Views
             {
                 try
                 {
-                    string diffName = Gimmickalize.GetDiffName(DifficultySelect.SelectedItem.ToString());
-                    StreamReader openFile = new StreamReader(FolderPath.Text + '\\' + DifficultySelect.SelectedItem.ToString());
+                    string fileFullName = FolderPath.Text + '\\' + DifficultySelect.SelectedItem.ToString();
+                    StreamReader openFile = new StreamReader(fileFullName);
                     logger.Info("File opened");
 
                     if (GimmickTypeSelect.SelectedItem.ToString() == "System.Windows.Controls.ComboBoxItem: Barlines")
                     {
-                        Gimmickalize.Barlines(openFile, diffName, logger);
+                        Gimmickalize.Barlines(in openFile, in fileFullName, in logger);
                     }
                     else if (GimmickTypeSelect.SelectedItem.ToString() == "System.Windows.Controls.ComboBoxItem: Yellow Notes")
                     {
