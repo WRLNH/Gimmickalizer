@@ -18,6 +18,7 @@ namespace Gimmickalizer.Views
         {
             InitializeComponent();
 
+            // logger相关
             Dispatcher.Invoke(() =>
             {
                 var target = new WpfRichTextBoxTarget
@@ -75,16 +76,21 @@ namespace Gimmickalizer.Views
                 try
                 {
                     string fileFullName = FolderPath.Text + '\\' + DifficultySelect.SelectedItem.ToString();
-                    StreamReader openFile = new StreamReader(fileFullName);
+                    StreamReader openFile = new(fileFullName);
                     logger.Info("File opened");
 
-                    if (GimmickTypeSelect.SelectedItem.ToString() == "System.Windows.Controls.ComboBoxItem: Barlines")
+                    switch (GimmickTypeSelect.SelectedIndex)
                     {
-                        Barlines.MakeBarlines(in openFile, in fileFullName, in logger);
-                    }
-                    else if (GimmickTypeSelect.SelectedItem.ToString() == "System.Windows.Controls.ComboBoxItem: Yellow Notes")
-                    {
-
+                        case 0:
+                            {
+                                Barlines.MakeBarlines(in openFile, in fileFullName, in logger);
+                                break;
+                            }
+                        case 1:
+                            {
+                                YellowAlternate.MakeYellowAlternate(in openFile, in fileFullName, in logger);
+                                break;
+                            }
                     }
 
                     openFile.Close();

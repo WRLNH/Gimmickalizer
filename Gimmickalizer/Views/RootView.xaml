@@ -63,7 +63,7 @@
                     Margin="0 5 0 0"
                     SelectedIndex="0">
                     <ComboBoxItem>Barlines</ComboBoxItem>
-                    <ComboBoxItem>Yellow Notes</ComboBoxItem>
+                    <ComboBoxItem>Yellow Alternate</ComboBoxItem>
                 </ComboBox>
 
                 <!-- Gimmick化! -->

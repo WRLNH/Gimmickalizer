@@ -19,7 +19,7 @@ namespace Gimmickalizer
             List<TimingPoints> RedLines = [];
             List<TimingPoints> GreenLines = [];
             List<HitObjects> hitObjects = [];
-            StreamWriter sw = new StreamWriter(outFileFullName);
+            StreamWriter sw = new(outFileFullName);
 
             // 遍历.osu文件
             while ((line = sr.ReadLine()) != null)
@@ -71,16 +71,17 @@ namespace Gimmickalizer
             foreach (string str in strLstTimingPoints)
             {
                 string[] subs = str.Split(',');
-                TimingPoints temp = new TimingPoints();
-
-                temp.Offset = Convert.ToInt32(subs[0]);
-                temp.BPM = subs[1];
-                temp.TimeSignature = Convert.ToInt32(subs[2]);
-                temp.Sample = Convert.ToInt32(subs[3]);
-                temp.SampleNumber = Convert.ToInt32(subs[4]);
-                temp.Volume = Convert.ToInt16(subs[5]);
-                temp.RedOrGreen = Convert.ToInt16(subs[6]);
-                temp.KiaiMode = Convert.ToInt16(subs[7]);
+                TimingPoints temp = new()
+                {
+                    Offset = Convert.ToInt32(subs[0]),
+                    BPM = subs[1],
+                    TimeSignature = Convert.ToInt32(subs[2]),
+                    Sample = Convert.ToInt32(subs[3]),
+                    SampleNumber = Convert.ToInt32(subs[4]),
+                    Volume = Convert.ToInt16(subs[5]),
+                    RedOrGreen = Convert.ToInt16(subs[6]),
+                    KiaiMode = Convert.ToInt16(subs[7])
+                };
                 timingPoints.Add(temp);
             }
             
@@ -102,13 +103,14 @@ namespace Gimmickalizer
             foreach (string str in strLstHitObjects)
             {
                 string[] subs = str.Split(',');
-                HitObjects temp = new HitObjects();
-
-                temp.XCoordinate = Convert.ToInt32(subs[0]);
-                temp.YCoordinate = Convert.ToInt32(subs[1]);
-                temp.Offset = Convert.ToInt32(subs[2]);
-                temp.Type = Convert.ToInt16(subs[3]);
-                temp.SoundEffect = Convert.ToInt16(subs[4]);
+                HitObjects temp = new()
+                {
+                    XCoordinate = Convert.ToInt32(subs[0]),
+                    YCoordinate = Convert.ToInt32(subs[1]),
+                    Offset = Convert.ToInt32(subs[2]),
+                    Type = Convert.ToInt16(subs[3]),
+                    SoundEffect = Convert.ToInt16(subs[4])
+                };
                 if (subs[3] == "1" || subs[3] == "5")
                 {
                     // 这是个Circle
@@ -139,12 +141,288 @@ namespace Gimmickalizer
                 {
                     int j = General.GetLastRedLineIndex(in RedLines, in hitObjects[i].Offset);
                     int k = General.GetLastGreenLineIndex(in GreenLines, in hitObjects[i].Offset);
+
+                    switch (hitObjects[i].SoundEffect)
+                    {
+                        case 0:
+                        case 4:
+                            {
+                                // 如果为咚 插3条红线
+                                if (k != -1)
+                                {
+                                    TimingPoints RedLine1 = new()
+                                    {
+                                        Offset = hitObjects[i].Offset - 1,
+                                        BPM = RedLines[j].BPM,
+                                        TimeSignature = RedLines[j].TimeSignature,
+                                        Sample = GreenLines[k].Sample,
+                                        SampleNumber = GreenLines[k].SampleNumber,
+                                        Volume = GreenLines[k].Volume,
+                                        RedOrGreen = 1,
+                                        KiaiMode = 0
+                                    };
+                                    TimingPoints RedLine2 = new()
+                                    {
+                                        Offset = hitObjects[i].Offset,
+                                        BPM = "1",
+                                        TimeSignature = RedLines[j].TimeSignature,
+                                        Sample = GreenLines[k].Sample,
+                                        SampleNumber = GreenLines[k].SampleNumber,
+                                        Volume = GreenLines[k].Volume,
+                                        RedOrGreen = 1,
+                                        KiaiMode = 0
+                                    };
+                                    TimingPoints RedLine3 = new()
+                                    {
+                                        Offset = hitObjects[i].Offset + 1,
+                                        BPM = RedLines[j].BPM,
+                                        TimeSignature = RedLines[j].TimeSignature,
+                                        Sample = GreenLines[k].Sample,
+                                        SampleNumber = GreenLines[k].SampleNumber,
+                                        Volume = GreenLines[k].Volume,
+                                        RedOrGreen = 1,
+                                        KiaiMode = 0
+                                    };
+                                    timingPoints.Add(RedLine1);
+                                    timingPoints.Add(RedLine2);
+                                    timingPoints.Add(RedLine3);
+                                }
+                                else
+                                {
+                                    TimingPoints RedLine1 = new()
+                                    {
+                                        Offset = hitObjects[i].Offset - 1,
+                                        BPM = RedLines[j].BPM,
+                                        TimeSignature = RedLines[j].TimeSignature,
+                                        Sample = RedLines[j].Sample,
+                                        SampleNumber = RedLines[j].SampleNumber,
+                                        Volume = RedLines[j].Volume,
+                                        RedOrGreen = 1,
+                                        KiaiMode = 0
+                                    };
+                                    TimingPoints RedLine2 = new()
+                                    {
+                                        Offset = hitObjects[i].Offset,
+                                        BPM = "1",
+                                        TimeSignature = RedLines[j].TimeSignature,
+                                        Sample = RedLines[j].Sample,
+                                        SampleNumber = RedLines[j].SampleNumber,
+                                        Volume = RedLines[j].Volume,
+                                        RedOrGreen = 1,
+                                        KiaiMode = 0
+                                    };
+                                    TimingPoints RedLine3 = new()
+                                    {
+                                        Offset = hitObjects[i].Offset + 1,
+                                        BPM = RedLines[j].BPM,
+                                        TimeSignature = RedLines[j].TimeSignature,
+                                        Sample = RedLines[j].Sample,
+                                        SampleNumber = RedLines[j].SampleNumber,
+                                        Volume = RedLines[j].Volume,
+                                        RedOrGreen = 1,
+                                        KiaiMode = 0
+                                    };
+                                    timingPoints.Add(RedLine1);
+                                    timingPoints.Add(RedLine2);
+                                    timingPoints.Add(RedLine3);
+                                }
+
+                                break;
+                            }
+                        case 2:
+                        case 8:
+                        case 6:
+                        case 12:
+                            {
+                                // 如果为咔 插7条红线
+                                if (k != -1)
+                                {
+                                    TimingPoints RedLine1 = new()
+                                    {
+                                        Offset = hitObjects[i].Offset - 7,
+                                        BPM = RedLines[j].BPM,
+                                        TimeSignature = RedLines[j].TimeSignature,
+                                        Sample = GreenLines[k].Sample,
+                                        SampleNumber = GreenLines[k].SampleNumber,
+                                        Volume = GreenLines[k].Volume,
+                                        RedOrGreen = 1,
+                                        KiaiMode = 0
+                                    };
+                                    TimingPoints RedLine2 = new()
+                                    {
+                                        Offset = hitObjects[i].Offset - 4,
+                                        BPM = RedLines[j].BPM,
+                                        TimeSignature = RedLines[j].TimeSignature,
+                                        Sample = GreenLines[k].Sample,
+                                        SampleNumber = GreenLines[k].SampleNumber,
+                                        Volume = GreenLines[k].Volume,
+                                        RedOrGreen = 1,
+                                        KiaiMode = 0
+                                    };
+                                    TimingPoints RedLine3 = new()
+                                    {
+                                        Offset = hitObjects[i].Offset - 1,
+                                        BPM = RedLines[j].BPM,
+                                        TimeSignature = RedLines[j].TimeSignature,
+                                        Sample = GreenLines[k].Sample,
+                                        SampleNumber = GreenLines[k].SampleNumber,
+                                        Volume = GreenLines[k].Volume,
+                                        RedOrGreen = 1,
+                                        KiaiMode = 0
+                                    };
+                                    TimingPoints RedLine4 = new()
+                                    {
+                                        Offset = hitObjects[i].Offset,
+                                        BPM = "1",
+                                        TimeSignature = RedLines[j].TimeSignature,
+                                        Sample = GreenLines[k].Sample,
+                                        SampleNumber = GreenLines[k].SampleNumber,
+                                        Volume = GreenLines[k].Volume,
+                                        RedOrGreen = 1,
+                                        KiaiMode = 0
+                                    };
+                                    TimingPoints RedLine5 = new()
+                                    {
+                                        Offset = hitObjects[i].Offset + 1,
+                                        BPM = RedLines[j].BPM,
+                                        TimeSignature = RedLines[j].TimeSignature,
+                                        Sample = GreenLines[k].Sample,
+                                        SampleNumber = GreenLines[k].SampleNumber,
+                                        Volume = GreenLines[k].Volume,
+                                        RedOrGreen = 1,
+                                        KiaiMode = 0
+                                    };
+                                    TimingPoints RedLine6 = new()
+                                    {
+                                        Offset = hitObjects[i].Offset + 4,
+                                        BPM = RedLines[j].BPM,
+                                        TimeSignature = RedLines[j].TimeSignature,
+                                        Sample = GreenLines[k].Sample,
+                                        SampleNumber = GreenLines[k].SampleNumber,
+                                        Volume = GreenLines[k].Volume,
+                                        RedOrGreen = 1,
+                                        KiaiMode = 0
+                                    };
+                                    TimingPoints RedLine7 = new TimingPoints
+                                    {
+                                        Offset = hitObjects[i].Offset + 7,
+                                        BPM = RedLines[j].BPM,
+                                        TimeSignature = RedLines[j].TimeSignature,
+                                        Sample = GreenLines[k].Sample,
+                                        SampleNumber = GreenLines[k].SampleNumber,
+                                        Volume = GreenLines[k].Volume,
+                                        RedOrGreen = 1,
+                                        KiaiMode = 0
+                                    };
+                                    timingPoints.Add(RedLine1);
+                                    timingPoints.Add(RedLine2);
+                                    timingPoints.Add(RedLine3);
+                                    timingPoints.Add(RedLine4);
+                                    timingPoints.Add(RedLine5);
+                                    timingPoints.Add(RedLine6);
+                                    timingPoints.Add(RedLine7);
+                                }
+                                else
+                                {
+                                    TimingPoints RedLine1 = new TimingPoints
+                                    {
+                                        Offset = hitObjects[i].Offset - 7,
+                                        BPM = RedLines[j].BPM,
+                                        TimeSignature = RedLines[j].TimeSignature,
+                                        Sample = RedLines[j].Sample,
+                                        SampleNumber = RedLines[j].SampleNumber,
+                                        Volume = RedLines[j].Volume,
+                                        RedOrGreen = 1,
+                                        KiaiMode = 0
+                                    };
+                                    TimingPoints RedLine2 = new TimingPoints
+                                    {
+                                        Offset = hitObjects[i].Offset - 4,
+                                        BPM = RedLines[j].BPM,
+                                        TimeSignature = RedLines[j].TimeSignature,
+                                        Sample = RedLines[j].Sample,
+                                        SampleNumber = RedLines[j].SampleNumber,
+                                        Volume = RedLines[j].Volume,
+                                        RedOrGreen = 1,
+                                        KiaiMode = 0
+                                    };
+                                    TimingPoints RedLine3 = new TimingPoints
+                                    {
+                                        Offset = hitObjects[i].Offset - 1,
+                                        BPM = RedLines[j].BPM,
+                                        TimeSignature = RedLines[j].TimeSignature,
+                                        Sample = RedLines[j].Sample,
+                                        SampleNumber = RedLines[j].SampleNumber,
+                                        Volume = RedLines[j].Volume,
+                                        RedOrGreen = 1,
+                                        KiaiMode = 0
+                                    };
+                                    TimingPoints RedLine4 = new TimingPoints
+                                    {
+                                        Offset = hitObjects[i].Offset,
+                                        BPM = "1",
+                                        TimeSignature = RedLines[j].TimeSignature,
+                                        Sample = RedLines[j].Sample,
+                                        SampleNumber = RedLines[j].SampleNumber,
+                                        Volume = RedLines[j].Volume,
+                                        RedOrGreen = 1,
+                                        KiaiMode = 0
+                                    };
+                                    TimingPoints RedLine5 = new TimingPoints
+                                    {
+                                        Offset = hitObjects[i].Offset + 1,
+                                        BPM = RedLines[j].BPM,
+                                        TimeSignature = RedLines[j].TimeSignature,
+                                        Sample = RedLines[j].Sample,
+                                        SampleNumber = RedLines[j].SampleNumber,
+                                        Volume = RedLines[j].Volume,
+                                        RedOrGreen = 1,
+                                        KiaiMode = 0
+                                    };
+                                    TimingPoints RedLine6 = new TimingPoints
+                                    {
+                                        Offset = hitObjects[i].Offset + 4,
+                                        BPM = RedLines[j].BPM,
+                                        TimeSignature = RedLines[j].TimeSignature,
+                                        Sample = RedLines[j].Sample,
+                                        SampleNumber = RedLines[j].SampleNumber,
+                                        Volume = RedLines[j].Volume,
+                                        RedOrGreen = 1,
+                                        KiaiMode = 0
+                                    };
+                                    TimingPoints RedLine7 = new TimingPoints
+                                    {
+                                        Offset = hitObjects[i].Offset + 7,
+                                        BPM = RedLines[j].BPM,
+                                        TimeSignature = RedLines[j].TimeSignature,
+                                        Sample = RedLines[j].Sample,
+                                        SampleNumber = RedLines[j].SampleNumber,
+                                        Volume = RedLines[j].Volume,
+                                        RedOrGreen = 1,
+                                        KiaiMode = 0
+                                    };
+                                    timingPoints.Add(RedLine1);
+                                    timingPoints.Add(RedLine2);
+                                    timingPoints.Add(RedLine3);
+                                    timingPoints.Add(RedLine4);
+                                    timingPoints.Add(RedLine5);
+                                    timingPoints.Add(RedLine6);
+                                    timingPoints.Add(RedLine7);
+                                }
+                                break;
+                            }
+                        default:
+                            {
+                                break;
+                            }
+                    }
+
                     if ((hitObjects[i].SoundEffect == 0) || (hitObjects[i].SoundEffect == 4))
                     {
                         // 如果为咚 插3条红线
                         if (k != -1)
                         {
-                            TimingPoints RedLine1 = new TimingPoints
+                            TimingPoints RedLine1 = new()
                             {
                                 Offset = hitObjects[i].Offset - 1,
                                 BPM = RedLines[j].BPM,
@@ -155,7 +433,7 @@ namespace Gimmickalizer
                                 RedOrGreen = 1,
                                 KiaiMode = 0
                             };
-                            TimingPoints RedLine2 = new TimingPoints
+                            TimingPoints RedLine2 = new()
                             {
                                 Offset = hitObjects[i].Offset,
                                 BPM = "1",
@@ -166,7 +444,7 @@ namespace Gimmickalizer
                                 RedOrGreen = 1,
                                 KiaiMode = 0
                             };
-                            TimingPoints RedLine3 = new TimingPoints
+                            TimingPoints RedLine3 = new()
                             {
                                 Offset = hitObjects[i].Offset + 1,
                                 BPM = RedLines[j].BPM,
@@ -183,7 +461,7 @@ namespace Gimmickalizer
                         }
                         else
                         {
-                            TimingPoints RedLine1 = new TimingPoints
+                            TimingPoints RedLine1 = new()
                             {
                                 Offset = hitObjects[i].Offset - 1,
                                 BPM = RedLines[j].BPM,
@@ -194,7 +472,7 @@ namespace Gimmickalizer
                                 RedOrGreen = 1,
                                 KiaiMode = 0
                             };
-                            TimingPoints RedLine2 = new TimingPoints
+                            TimingPoints RedLine2 = new()
                             {
                                 Offset = hitObjects[i].Offset,
                                 BPM = "1",
@@ -205,7 +483,7 @@ namespace Gimmickalizer
                                 RedOrGreen = 1,
                                 KiaiMode = 0
                             };
-                            TimingPoints RedLine3 = new TimingPoints
+                            TimingPoints RedLine3 = new()
                             {
                                 Offset = hitObjects[i].Offset + 1,
                                 BPM = RedLines[j].BPM,
@@ -226,7 +504,7 @@ namespace Gimmickalizer
                         // 如果为咔 插7条红线
                         if (k != -1)
                         {
-                            TimingPoints RedLine1 = new TimingPoints
+                            TimingPoints RedLine1 = new()
                             {
                                 Offset = hitObjects[i].Offset - 7,
                                 BPM = RedLines[j].BPM,
@@ -237,7 +515,7 @@ namespace Gimmickalizer
                                 RedOrGreen = 1,
                                 KiaiMode = 0
                             };
-                            TimingPoints RedLine2 = new TimingPoints
+                            TimingPoints RedLine2 = new()
                             {
                                 Offset = hitObjects[i].Offset - 4,
                                 BPM = RedLines[j].BPM,
@@ -248,7 +526,7 @@ namespace Gimmickalizer
                                 RedOrGreen = 1,
                                 KiaiMode = 0
                             };
-                            TimingPoints RedLine3 = new TimingPoints
+                            TimingPoints RedLine3 = new()
                             {
                                 Offset = hitObjects[i].Offset - 1,
                                 BPM = RedLines[j].BPM,
@@ -259,7 +537,7 @@ namespace Gimmickalizer
                                 RedOrGreen = 1,
                                 KiaiMode = 0
                             };
-                            TimingPoints RedLine4 = new TimingPoints
+                            TimingPoints RedLine4 = new()
                             {
                                 Offset = hitObjects[i].Offset,
                                 BPM = "1",
@@ -270,7 +548,7 @@ namespace Gimmickalizer
                                 RedOrGreen = 1,
                                 KiaiMode = 0
                             };
-                            TimingPoints RedLine5 = new TimingPoints
+                            TimingPoints RedLine5 = new()
                             {
                                 Offset = hitObjects[i].Offset + 1,
                                 BPM = RedLines[j].BPM,
@@ -281,7 +559,7 @@ namespace Gimmickalizer
                                 RedOrGreen = 1,
                                 KiaiMode = 0
                             };
-                            TimingPoints RedLine6 = new TimingPoints
+                            TimingPoints RedLine6 = new()
                             {
                                 Offset = hitObjects[i].Offset + 4,
                                 BPM = RedLines[j].BPM,
@@ -419,31 +697,26 @@ namespace Gimmickalizer
             sw.WriteLine("[HitObjects]");
             foreach (HitObjects objects in hitObjects)
             {
-                /// <summary>
-                /// XCoordinate为X坐标
-                /// YCoordinate为Y坐标
-                /// Offset为时间点
-                /// Type为类型  1为Circle 2为Slider 12为Spinner 5为Circle New Combo 6为Slider New Combo
-                /// SoundEffect为Circle类型 若为Circl则0为o 2或8为x 4为O 6或12为X  若为Slider则0为小滑条 4为大滑条
-                /// SliderSomthing为Slider的一些信息  Taiko里似乎没啥用 仅Slider该成员有值
-                /// SliderRepeatTimes为Slider的一些信息  Taiko里似乎没啥用 仅Slider该成员有值
-                /// OffsetLength为滑条长度  仅Slider该成员有值
-                /// SpinnerSample不确定  一般为0 仅Spinner该成员有值
-                /// SpinnerEndOffset为转盘结束时间点  仅Spinner该成员有值
-                /// UselessEnding不知道是啥  一般为"0:0:0:0:" 仅Circle和Spinner该成员有值
-                /// </summary>
-                if (objects.Type == 1 || objects.Type == 5)
+                switch (objects.Type)
                 {
-                    sw.WriteLine($"{objects.XCoordinate},{objects.YCoordinate},{objects.Offset},{objects.Type},{objects.SoundEffect},{objects.UselessEnding}");
+                    case 1:
+                    case 5:
+                        {
+                            sw.WriteLine($"{objects.XCoordinate},{objects.YCoordinate},{objects.Offset},{objects.Type},{objects.SoundEffect},{objects.UselessEnding}");
+                            break;
+                        }
+                    case 2:
+                    case 6:
+                        {
+                            sw.WriteLine($"{objects.XCoordinate},{objects.YCoordinate},{objects.Offset},{objects.Type},{objects.SoundEffect},{objects.SliderSomething},{objects.SliderRepeatTimes},{objects.OffsetLength}");
+                            break;
+                        }
+                    case 12:
+                        {
+                            sw.WriteLine($"{objects.XCoordinate},{objects.YCoordinate},{objects.Offset},{objects.Type},{objects.SoundEffect},{objects.SpinnerEndOffset},{objects.UselessEnding}");
+                            break;
+                        }
                 }
-                else if (objects.Type == 2 || objects.Type == 6)
-                {
-                    sw.WriteLine($"{objects.XCoordinate},{objects.YCoordinate},{objects.Offset},{objects.Type},{objects.SoundEffect},{objects.SliderSomething},{objects.SliderRepeatTimes},{objects.OffsetLength}");
-                }
-                else if (objects.Type == 12)
-                {
-                    sw.WriteLine($"{objects.XCoordinate},{objects.YCoordinate},{objects.Offset},{objects.Type},{objects.SoundEffect},{objects.SpinnerEndOffset},{objects.UselessEnding}");
-                }    
             }
 
             sw.Close();

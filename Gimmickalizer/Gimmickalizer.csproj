@@ -25,17 +25,11 @@
     <DefineConstants>TRACE;Core</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
-    <None Remove="Views\Gimmickalizer.ico" />
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="HandyControls" Version="3.5.2" />
     <PackageReference Include="NLog" Version="4.7.15" />
     <PackageReference Include="NLog.Config" Version="4.7.15" />
     <PackageReference Include="NLog.Schema" Version="4.7.15" />
     <PackageReference Include="NLog.Wpf.RichTextBox" Version="1.0.2" />
     <PackageReference Include="Stylet" Version="1.3.6" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Views\Gimmickalizer.ico" />
   </ItemGroup>
 </Project>
