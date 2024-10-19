@@ -8,7 +8,7 @@
 你可以在终端中输入`dotnet --list-runtimes`查看已安装的运行时
 <img src="./docs/checkdotNet.png">
 
-如果未安装相关依赖, 可以在终端中输入`winget install Microsoft.DotNet.SDK.8`来进行安装
+如果未安装相关依赖, 可以在终端中输入`winget install Microsoft.DotNet.SDK.8`来进行安装  
 也可自行百度其他方法来安装依赖
 
 双击`Gimmickalizer.exe`打开应用程序后将出现如下界面
