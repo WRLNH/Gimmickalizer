@@ -5,9 +5,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows;
-using Gimmickalizer;
-using System.Diagnostics;
-using System.IO.IsolatedStorage;
 
 namespace Gimmickalizer.Views
 {
@@ -83,7 +80,7 @@ namespace Gimmickalizer.Views
 
                     if (GimmickTypeSelect.SelectedItem.ToString() == "System.Windows.Controls.ComboBoxItem: Barlines")
                     {
-                        Gimmickalize.Barlines(in openFile, in fileFullName, in logger);
+                        Barlines.MakeBarlines(in openFile, in fileFullName, in logger);
                     }
                     else if (GimmickTypeSelect.SelectedItem.ToString() == "System.Windows.Controls.ComboBoxItem: Yellow Notes")
                     {
