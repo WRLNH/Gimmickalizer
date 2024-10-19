@@ -15,7 +15,7 @@
 <img src="./docs/startUp.png">
 左侧为程序交互界面, 右侧为日志输出界面
 
-在".osu文件夹路径"处输入你想要Gimmick化的铺面文件夹路径
+在".osu文件夹路径"处输入你想要Gimmick化的铺面文件夹路径  
 你可以在"文件资源管理器"中直接复制文件夹路径, 如下图所示
 <img src="./docs/fileExplorer.png">
 留意当前文件夹中的文件列表
