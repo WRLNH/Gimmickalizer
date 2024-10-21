@@ -5,6 +5,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using AutoUpdaterDotNET;
+using System.Globalization;
+using System.Threading;
 
 namespace Gimmickalizer.Views
 {
@@ -37,6 +40,9 @@ namespace Gimmickalizer.Views
                 LogManager.Configuration.LoggingRules.Insert(0, new NLog.Config.LoggingRule("*", LogLevel.Info, asyncWrapper));
                 LogManager.ReconfigExistingLoggers();
             });
+
+            Thread.CurrentThread.CurrentCulture = Thread.CurrentThread.CurrentUICulture = CultureInfo.CreateSpecificCulture("zh");
+            AutoUpdater.Start("https://raw.githubusercontent.com/WRLNH/Gimmickalizer/refs/heads/dev/Gimmickalizer/UpdateInfo.xml");
         }
 
         private void ReadPath_Click(object sender, RoutedEventArgs e)
