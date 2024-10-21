@@ -51,6 +51,7 @@ namespace Gimmickalizer.Views
 
         private void AutoUpdaterOnCheckForUpdateEvent(UpdateInfoEventArgs args)
         {
+            logger.Info("检查版本更新中...");
             if (args.Error == null)
             {
                 if (args.IsUpdateAvailable)
@@ -72,14 +73,14 @@ namespace Gimmickalizer.Views
                 }
                 else
                 {
-                    HandyControl.Controls.MessageBox.Show("当前版本已是最新版本！", "Gimmickalizer", MessageBoxButton.OK);
+                    logger.Info("当前版本已是最新版本！");
                 }
             }
             else
             {
                 if (args.Error is WebException)
                 {
-                    HandyControl.Controls.MessageBox.Show(@"There is a problem reaching update server. Please check your internet connection and try again later.", "Gimmickalizer", MessageBoxButton.OK);
+                    HandyControl.Controls.MessageBox.Show("There is a problem reaching update server. Please check your internet connection and try again later.", "Gimmickalizer", MessageBoxButton.OK);
                 }
                 else
                 {
