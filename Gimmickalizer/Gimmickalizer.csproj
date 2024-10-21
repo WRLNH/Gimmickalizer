@@ -5,12 +5,10 @@
     <UseWPF>true</UseWPF>
     <AssemblyName>Gimmickalizer</AssemblyName>
     <RootNamespace>Gimmickalizer</RootNamespace>
-    <Version>1.0.0.0</Version>
     <Configurations>Debug;Release</Configurations>
-    <Copyright>Copyright © 17894 2024</Copyright>
-    <FileVersion>1.0.0.0</FileVersion>
-    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <Copyright>Copyright © WRLNH 2024</Copyright>
     <Platforms>AnyCPU;x64</Platforms>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants>TRACE;Core</DefineConstants>
