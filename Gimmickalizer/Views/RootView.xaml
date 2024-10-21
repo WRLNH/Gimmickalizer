@@ -12,8 +12,7 @@
     WindowStartupLocation="CenterScreen"
     ShowTitle="True"
     Height="450" 
-    Width="800"
-    Icon="/Views/Gimmickalizer.ico">
+    Width="800" Icon="/Views/Gimmickalizer.ico">
 
     <Border Padding="10">
         <Grid>
