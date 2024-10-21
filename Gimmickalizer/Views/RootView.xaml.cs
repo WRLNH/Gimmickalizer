@@ -8,6 +8,9 @@ using System.Windows;
 using AutoUpdaterDotNET;
 using System.Globalization;
 using System.Threading;
+using System.Net;
+using System.Windows.Forms;
+using System;
 
 namespace Gimmickalizer.Views
 {
@@ -42,7 +45,47 @@ namespace Gimmickalizer.Views
             });
 
             Thread.CurrentThread.CurrentCulture = Thread.CurrentThread.CurrentUICulture = CultureInfo.CreateSpecificCulture("zh");
-            AutoUpdater.Start("https://raw.githubusercontent.com/WRLNH/Gimmickalizer/refs/heads/dev/Gimmickalizer/UpdateInfo.xml");
+            AutoUpdater.CheckForUpdateEvent += AutoUpdaterOnCheckForUpdateEvent;
+            AutoUpdater.Start("https://raw.githubusercontent.com/WRLNH/Gimmickalizer/refs/heads/master/Gimmickalizer/UpdateInfo.xml");
+        }
+
+        private void AutoUpdaterOnCheckForUpdateEvent(UpdateInfoEventArgs args)
+        {
+            if (args.Error == null)
+            {
+                if (args.IsUpdateAvailable)
+                {
+                    DialogResult dialogResult;
+                    dialogResult = (DialogResult)HandyControl.Controls.MessageBox.Show($"发现新版本 v{args.CurrentVersion}！是否打开下载页面？", "Gimmickalizer", MessageBoxButton.OKCancel);
+
+                    if (dialogResult == System.Windows.Forms.DialogResult.OK)
+                    {
+                        try
+                        {
+                            System.Diagnostics.Process.Start("explorer.exe", "https://github.com/WRLNH/Gimmickalizer/releases");
+                        }
+                        catch (Exception exception)
+                        {
+                            HandyControl.Controls.MessageBox.Show(exception.Message, exception.GetType().ToString(), MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
+                    }
+                }
+                else
+                {
+                    HandyControl.Controls.MessageBox.Show("当前版本已是最新版本！", "Gimmickalizer", MessageBoxButton.OK);
+                }
+            }
+            else
+            {
+                if (args.Error is WebException)
+                {
+                    HandyControl.Controls.MessageBox.Show(@"There is a problem reaching update server. Please check your internet connection and try again later.", "Gimmickalizer", MessageBoxButton.OK);
+                }
+                else
+                {
+                    HandyControl.Controls.MessageBox.Show(args.Error.Message, args.Error.GetType().ToString(), MessageBoxButton.OK);
+                }
+            }
         }
 
         private void ReadPath_Click(object sender, RoutedEventArgs e)
