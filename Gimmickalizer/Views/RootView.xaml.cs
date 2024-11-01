@@ -1,24 +1,23 @@
-﻿using NLog;
+﻿using AutoUpdaterDotNET;
+using NLog;
 using NLog.Targets.Helper;
 using NLog.Targets.Wrappers;
+using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Windows;
-using AutoUpdaterDotNET;
-using System.Globalization;
-using System.Threading;
 using System.Net;
+using System.Threading;
+using System.Windows;
 using System.Windows.Forms;
-using System;
 
 namespace Gimmickalizer.Views
 {
     public partial class RootView : HandyControl.Controls.Window
     {
         public Logger logger = LogManager.GetCurrentClassLogger();
-        public List<FileInfo> lstFiles;
-        public string inputFilePath;
+        private List<FileInfo> lstFiles;
 
         public RootView()
         {
@@ -44,8 +43,10 @@ namespace Gimmickalizer.Views
                 LogManager.ReconfigExistingLoggers();
             });
 
+            // AutoUpdater.NET相关
             Thread.CurrentThread.CurrentCulture = Thread.CurrentThread.CurrentUICulture = CultureInfo.CreateSpecificCulture("zh");
             AutoUpdater.CheckForUpdateEvent += AutoUpdaterOnCheckForUpdateEvent;
+            logger.Info("检查版本中...");
             AutoUpdater.Start("https://raw.githubusercontent.com/WRLNH/Gimmickalizer/refs/heads/master/Gimmickalizer/UpdateInfo.xml");
         }
 
@@ -72,7 +73,7 @@ namespace Gimmickalizer.Views
                 }
                 else
                 {
-                    HandyControl.Controls.MessageBox.Show("当前版本已是最新版本！", "Gimmickalizer", MessageBoxButton.OK);
+                    logger.Info("当前版本已是最新版本");
                 }
             }
             else
